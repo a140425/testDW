@@ -9,13 +9,6 @@
 <title>Insert title here</title>
 </head>
 <body>
-	<table>
-		<tr>
-			<td height="16" width="7%">input</td>
-			<td width="60%"><input name="input" type="text" id="input" /></td>
-		</tr>
-
-	</table>
 	<input type="button" id="sendout" value="submit"
 		style="font-size: 10pt; width: 50px; height: 25px;">
 		<br>
@@ -23,8 +16,6 @@
 
 	<script type="text/javascript">
 		$("#sendout").click(function() {
-			$("#input").val();
-			alert("true : " + $("#input").val());
 			$.post("/testDW/TestServlet?date=" + "10000", {}, function(postRtn) {
 				$("#output").html(postRtn);
 			});
