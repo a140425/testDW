@@ -1,4 +1,3 @@
-import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Calendar;
@@ -7,27 +6,32 @@ public class SocketServer extends java.lang.Thread {
 
 	private boolean OutServer = false;
 	private ServerSocket server;
-	private final int ServerPort = 4520;// 要監控的port
+	private final int ServerPort = 4520;
 
-	public SocketServer() throws IOException {
-		server = new ServerSocket(ServerPort);
+	public SocketServer() {
+		try {
+			server = new ServerSocket(ServerPort);
+
+		} catch (java.io.IOException e) {
+			System.out.println("Socket startuup failed");
+			System.out.println("IOException :" + e.toString());
+		}
 	}
 
 	public void run() {
 		Socket socket;
 		java.io.BufferedInputStream in;
 
-		System.out.println("伺服器已啟動 !");
+		System.out.println("Server started");
 		while (!OutServer) {
 			socket = null;
 			try {
 				synchronized (server) {
 					socket = server.accept();
 				}
-				System.out.println("取得連線 : InetAddress = "
+				System.out.println("Get connection : InetAddress = "
 						+ socket.getInetAddress());
-				// TimeOut時間
-				socket.setSoTimeout(600000);
+				socket.setSoTimeout(15000);
 
 				in = new java.io.BufferedInputStream(socket.getInputStream());
 				byte[] b = new byte[1024];
@@ -36,14 +40,15 @@ public class SocketServer extends java.lang.Thread {
 				while ((length = in.read(b)) > 0) {
 					data += new String(b, 0, length);
 				}
-				System.out.println("我取得的值:" + data);
+
+				System.out.println("Value feom client :" + data);
 				waitFor(Integer.valueOf(data));
 				in.close();
 				in = null;
 				socket.close();
 
 			} catch (java.io.IOException e) {
-				System.out.println("Socket連線有問題 !");
+				System.out.println("Socket connection failed");
 				System.out.println("IOException :" + e.toString());
 			}
 
